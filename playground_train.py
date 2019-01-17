@@ -107,7 +107,7 @@ with g2.as_default():
             if not ((epoch) % 50):
                 preds, l, acc = sess.run([pred_y, loss, accuracy], feed_dict={X: data, Y: label})
                 print("Prediction:\n{}, \nTrue label:\n{},"
-                      " \nLoss:{:.3f}, \nAccuracy:{.2%}".format(preds[::50], label[::50], l, acc))
+                      " \nLoss:{:.3f}, \nAccuracy:{:.2%}".format(preds[::50], label[::50], l, acc))
 
 # Model 3: xor data | harder than the previous two models
 # smaller batch_size and little bit larger learning_rate
@@ -248,5 +248,5 @@ with g4.as_default():
                 # sess.run(training_op, feed_dict={X: data, Y: label})
                 preds, l, acc = sess.run([pred_y, loss, accuracy], feed_dict={X: data, Y: label})
                 print("Prediction:\n{}, \nTrue label:\n{},"
-                      " \nLoss:{}, \nAccuracy:{}".format(preds[::100], label[::100], l, acc))
+                      " \nLoss:{:3.f}, \nAccuracy:{:.2%}".format(preds[::100], label[::100], l, acc))
 
