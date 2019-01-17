@@ -4,9 +4,6 @@ from tensorflow.contrib.layers import fully_connected
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from dataset import *
-"""
-train circle data--> plot 1
-"""
 
 
 # get data from dataset module, which is
