@@ -58,14 +58,14 @@ def dist(a, b):
     return math.sqrt(dx ** 2 + dy ** 2)
 
 
-def random_normal(mean, variance):
+def random_normal(mean, stdev):
     """
     生成给定均值和方差的正态分布随机数，不指定size。默认生成一个
     :param mean: 生成分布的均值
-    :param variance: 生成分布的方差
+    :param stdev: 生成分布的标准差
     :return: 生成的对应分布随机数
     """
-    return np.random.normal(mean, variance)
+    return np.random.normal(mean, stdev)
 
 
 def random_uniform(a, b):
@@ -89,7 +89,7 @@ def classify_two_gauss_data(num_samples, noise):
     # 按照noise的尺度（在0~0.5范围内）线性生成扰动的方差（0.5~4）
     variance_scale = linear([0, .5], [0.5, 4])
     variance = variance_scale(noise)  # 如果noise=0.2,插值variancc=1.9
-
+    stdev = math.sqrt(variance)
     def gen_gauss(cx, cy, label):
         """
         给定噪声方差，生成给定均值的正态随机数用于x和y坐标，不同的label对应不同的(x,y)中心（均值）点
@@ -99,8 +99,8 @@ def classify_two_gauss_data(num_samples, noise):
         :return:
         """
         for _ in range(math.ceil(num_samples / 2)):
-            x = random_normal(cx, variance)
-            y = random_normal(cy, variance)
+            x = random_normal(cx, stdev)
+            y = random_normal(cy, stdev)
             points.append({'x': x, 'y': y, 'label': label})
     # label=1以（2,2）为中心
     # label=-1以（-2，-2）为中心
@@ -265,13 +265,16 @@ def classify_xor_data(num_samples, noise):
 
 
 # playground拆包和重组接口
-def get_samples(data_type, size, noise):
+def get_samples(data_type, size, noise, clip=True):
     raw_data = data_type(size, noise)
     x1 = [r["x"] for r in raw_data]
     x2 = [r["y"] for r in raw_data]
     lab = [r["label"] for r in raw_data]
     data = np.array(list(zip(x1, x2)))
-    label = np.clip(np.array(lab), 0.0, 1.0)
+    if clip:
+        label = np.clip(np.array(lab), 0.0, 1.0).reshape(-1, 1)
+    else:
+        label = np.array(lab).reshape(-1, 1)
     return data, label
 
 
