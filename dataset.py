@@ -42,11 +42,12 @@ def classify_two_gauss_data(num_samples, noise):
     points = []
     variance_scale = linear([0, .5], [0.5, 4])
     variance = variance_scale(noise)
+    v_sqrt = math.sqrt(variance)
 
     def gen_gauss(cx, cy, label):
         for _ in range(math.ceil(num_samples / 2)):
-            x = random_normal(cx, variance)
-            y = random_normal(cy, variance)
+            x = random_normal(cx, v_sqrt)
+            y = random_normal(cy, v_sqrt)
             points.append({'x': x, 'y': y, 'label': label})
 
     gen_gauss(2, 2, 1)
