@@ -265,7 +265,7 @@ def classify_xor_data(num_samples, noise):
 
 
 # playground拆包和重组接口
-def get_samples(data_type, size, noise, clip=True):
+def get_samples(data_type, size, noise, clip=False):
     raw_data = data_type(size, noise)
     x1 = [r["x"] for r in raw_data]
     x2 = [r["y"] for r in raw_data]
