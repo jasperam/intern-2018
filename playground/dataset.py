@@ -58,14 +58,14 @@ def dist(a, b):
     return math.sqrt(dx ** 2 + dy ** 2)
 
 
-def random_normal(mean, stdev):
+def random_normal(mean, variance):
     """
     生成给定均值和方差的正态分布随机数，不指定size。默认生成一个
     :param mean: 生成分布的均值
-    :param stdev: 生成分布的标准差
+    :param variance: 生成分布的方差
     :return: 生成的对应分布随机数
     """
-    return np.random.normal(mean, stdev)
+    return np.random.normal(mean, variance)
 
 
 def random_uniform(a, b):
@@ -89,7 +89,7 @@ def classify_two_gauss_data(num_samples, noise):
     # 按照noise的尺度（在0~0.5范围内）线性生成扰动的方差（0.5~4）
     variance_scale = linear([0, .5], [0.5, 4])
     variance = variance_scale(noise)  # 如果noise=0.2,插值variancc=1.9
-    stdev = math.sqrt(variance)
+
     def gen_gauss(cx, cy, label):
         """
         给定噪声方差，生成给定均值的正态随机数用于x和y坐标，不同的label对应不同的(x,y)中心（均值）点
@@ -99,8 +99,8 @@ def classify_two_gauss_data(num_samples, noise):
         :return:
         """
         for _ in range(math.ceil(num_samples / 2)):
-            x = random_normal(cx, stdev)
-            y = random_normal(cy, stdev)
+            x = random_normal(cx, variance**0.5)
+            y = random_normal(cy, variance**0.5)
             points.append({'x': x, 'y': y, 'label': label})
     # label=1以（2,2）为中心
     # label=-1以（-2，-2）为中心
@@ -265,7 +265,7 @@ def classify_xor_data(num_samples, noise):
 
 
 # playground拆包和重组接口
-def get_samples(data_type, size, noise, clip=False):
+def get_samples(data_type, size, noise, clip=True):
     raw_data = data_type(size, noise)
     x1 = [r["x"] for r in raw_data]
     x2 = [r["y"] for r in raw_data]
@@ -306,11 +306,6 @@ if __name__ == '__main__':
     plt.figure()
     plt.subplot2grid((2, 2), (0, 0), colspan=1, rowspan=1)
     plot_test(classify_circle_data, .8, 0.2)
-    ax1 = plt.gca()
-    ax1.spines["right"].set_color("red")
-    ax1.spines["left"].set_color("red")
-    ax1.spines["top"].set_color("red")
-    ax1.spines["bottom"].set_color("red")
     plt.subplot2grid((2, 2), (0, 1), colspan=1, rowspan=1)
     plot_test(classify_xor_data, .8, 0.2)
     plt.subplot2grid((2, 2), (1, 0), colspan=1, rowspan=1)
