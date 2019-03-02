@@ -448,6 +448,6 @@
     <td class="tg-0pky">committee of 35 conv. net, 1-20-P-40-P-150-10 [elastic distortions]</td>
     <td class="tg-0pky">width normalization</td>
     <td class="tg-0pky">0.23</td>
-    <td class="tg-0pky"><a href="https://arxiv.org/pdf/1202.2745.pdf">Ciresan et al. CVPR 20121</a></td>
+    <td class="tg-0pky"><a href="https://arxiv.org/pdf/1202.2745.pdf">Ciresan et al. CVPR 2012</a></td>
   </tr>
 </table>
