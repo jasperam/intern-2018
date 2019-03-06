@@ -87,11 +87,11 @@ def simard_model_fn(features, labels, mode):
     # Calculate Loss using Cross-Entropy(for both TRAIN and EVAL modes)
     loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
 
-    summary_hook = tf.train.SummarySaverHook(
-        save_steps=100,
-        output_dir=OUTPUT_DIR,
-        summary_op=tf.summary.merge_all()
-    )
+    #summary_hook = tf.train.SummarySaverHook(
+    #    save_steps=100,
+    #    output_dir=OUTPUT_DIR,
+    #    summary_op=tf.summary.merge_all()
+    #)
 
     # Configure the Training Op (for TRAIN mode)
     lr = 0.05
@@ -108,7 +108,7 @@ def simard_model_fn(features, labels, mode):
         train_op = optimizer.minimize(
             loss=loss,
             global_step=tf.train.get_global_step())
-        return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op, training_hooks=summary_hook)
+        return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
 
     # Add evaluation metrics (for EVAL mode)
     acc_op = tf.metrics.accuracy(
@@ -119,27 +119,28 @@ def simard_model_fn(features, labels, mode):
         "accuracy": acc_op
     }
     acc_summary = tf.summary.scalar("accuracy", acc_op[0])
-    eval_hook = tf.train.SummarySaverHook(
-        save_steps=500,
-        output_dir=OUTPUT_EVAL_DIR
-    )
+    #eval_hook = tf.train.SummarySaverHook(
+    #    save_steps=500,
+    #    output_dir=OUTPUT_EVAL_DIR
+    #)
 
     return tf.estimator.EstimatorSpec(
-        mode=mode, loss=loss, eval_metric_ops=eval_metric_ops, evaluation_hooks=[eval_hook])
+        mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
 
 def main(argv, prep = None):
 
     # Preprocessing 1 : add zeros to reshape the images to 29*29*1 according to the paper
     def prep1(size=28):
-        train_x = mnist.train.images
-        test_x = mnist.test.images
+        train_x = mnist.train.images.reshape([-1, 28, 28])
+        test_x = mnist.test.images.reshape([-1, 28, 28])
         image = []
         for mat in [train_x, test_x]:
             ret = np.zeros((mat.shape[0], mat.shape[1] + 1, mat.shape[2] + 1))
             for i in range(mat.shape[0]):
                 temp = np.vstack((np.zeros((1, size)), mat[i]))
-                image.append(np.hstack((temp, np.zeros((size + 1, 1)))))
+                ret[i] = np.hstack((temp, np.zeros((size + 1, 1))))
+            image.append(ret.reshape([-1, 29, 29]))
         return (image[0], mnist.train.labels), (image[1], mnist.test.labels)
 
     # Preprocessing 2 : affine distortion
