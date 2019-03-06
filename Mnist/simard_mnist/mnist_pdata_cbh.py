@@ -1,4 +1,8 @@
 
+"""
+preprocessing the datasets: affine distortion and elastic transformation
+"""
+
 import tensorflow as tf
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
